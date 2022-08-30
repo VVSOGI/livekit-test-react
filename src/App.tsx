@@ -1,7 +1,22 @@
 import { useEffect } from "react";
+import axios from "axios";
 
 function App() {
-  useEffect(() => {}, []);
+  useEffect(() => {
+    (async () => {
+      const { data: accessToken } = await axios.get(
+        "http://localhost:4000/access-token",
+        {
+          params: {
+            participantName: "benny",
+            roomName: "benny-room",
+          },
+        }
+      );
+
+      console.log(accessToken);
+    })();
+  }, []);
 
   return <>hello world!</>;
 }
