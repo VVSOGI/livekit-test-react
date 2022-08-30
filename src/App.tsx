@@ -1,13 +1,13 @@
 import "@livekit/react-components/dist/index.css";
-import axios from "axios";
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AudioSelectButton,
   LiveKitRoom,
-  VideoRenderer,
   VideoSelectButton,
 } from "@livekit/react-components";
 import { createLocalVideoTrack, LocalVideoTrack } from "livekit-client";
+import { selectVideoDevice, toggleAudio, toggleVideo } from "./utils";
+import getAccessToken from "./api/getAccessToken";
 
 function App() {
   const [token, setToken] = useState(null);
@@ -21,70 +21,20 @@ function App() {
 
   const canStream = token && url && audioDevice && videoDevice;
 
-  const toggleVideo = async () => {
-    if (videoTrack) {
-      videoTrack.stop();
-      setVideoEnabled(false);
-      setVideoTrack(undefined);
-    } else {
+  useEffect(() => {
+    // enable video by default
+    (async () => {
       const track = await createLocalVideoTrack({
         deviceId: videoDevice?.deviceId,
       });
       setVideoEnabled(true);
       setVideoTrack(track);
-    }
-  };
-
-  const toggleAudio = () => {
-    if (audioEnabled) {
-      setAudioEnabled(false);
-    } else {
-      setAudioEnabled(true);
-    }
-  };
-
-  const selectVideoDevice = (device: MediaDeviceInfo) => {
-    setVideoDevice(device);
-    if (videoTrack) {
-      if (
-        videoTrack.mediaStreamTrack.getSettings().deviceId === device.deviceId
-      ) {
-        return;
-      }
-      // stop video
-      videoTrack.stop();
-    }
-  };
-
-  let videoElement: ReactElement;
-  if (videoTrack) {
-    videoElement = <VideoRenderer track={videoTrack} isLocal={true} />;
-  } else {
-    videoElement = <div className="placeholder" />;
-  }
-
-  useEffect(() => {
-    // enable video by default
-    createLocalVideoTrack({
-      deviceId: videoDevice?.deviceId,
-    }).then((track) => {
-      setVideoEnabled(true);
-      setVideoTrack(track);
-    });
+    })();
   }, [videoDevice]);
 
   useEffect(() => {
     (async () => {
-      const { data: accessToken } = await axios.get(
-        "http://localhost:4000/access-token",
-        {
-          params: {
-            participantName: "benny",
-            roomName: "benny-room",
-          },
-        }
-      );
-
+      const accessToken = await getAccessToken("benny", "benny-room");
       setToken(accessToken);
     })();
   }, []);
@@ -99,13 +49,22 @@ function App() {
             <div>
               <AudioSelectButton
                 isMuted={!audioEnabled}
-                onClick={toggleAudio}
+                onClick={() => toggleAudio({ audioEnabled, setAudioEnabled })}
                 onSourceSelected={setAudioDevice}
               />
               <VideoSelectButton
                 isEnabled={videoTrack !== undefined}
-                onClick={toggleVideo}
-                onSourceSelected={selectVideoDevice}
+                onClick={() =>
+                  toggleVideo({
+                    videoTrack,
+                    videoDevice,
+                    setVideoEnabled,
+                    setVideoTrack,
+                  })
+                }
+                onSourceSelected={(device) => {
+                  selectVideoDevice({ device, videoTrack, setVideoDevice });
+                }}
               />
             </div>
           </div>
