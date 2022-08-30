@@ -1,6 +1,8 @@
 import { LiveKitRoom } from "@livekit/react-components";
 import { RoomEvent, VideoPresets } from "livekit-client";
-import React from "react";
+import React, { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { UsernameState } from "../../recoil";
 import {
   onConnected,
   onParticipantDisconnected,
@@ -28,10 +30,11 @@ export default function Stream({
   videoDevice,
   setNumParticipants,
 }: Props) {
+  const [username] = useRecoilState(UsernameState);
+
   return (
     <>
       <span>{numParticipants}</span>
-
       <LiveKitRoom
         onConnected={(room) => {
           onConnected({

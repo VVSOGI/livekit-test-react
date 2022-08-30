@@ -7,7 +7,7 @@ import { LocalVideoTrack } from "livekit-client";
 import React, { useState } from "react";
 import { useRecoilState } from "recoil";
 import getAccessToken from "../../api/getAccessToken";
-import { AccessTokenState } from "../../recoil";
+import { AccessTokenState, UsernameState } from "../../recoil";
 import { selectVideoDevice, toggleAudio, toggleVideo } from "../../utils";
 
 interface Props {
@@ -36,7 +36,7 @@ export default function Prepare({
   setVideoDevice,
 }: Props) {
   const [, setToken] = useRecoilState(AccessTokenState);
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useRecoilState(UsernameState);
   const [roomname, setRoomname] = useState("");
 
   const handleGetToken = async () => {
