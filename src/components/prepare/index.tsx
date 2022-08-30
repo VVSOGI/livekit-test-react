@@ -2,8 +2,12 @@ import {
   AudioSelectButton,
   VideoSelectButton,
 } from "@livekit/react-components";
+import { Box, Button, TextField } from "@mui/material";
 import { LocalVideoTrack } from "livekit-client";
-import React from "react";
+import React, { useState } from "react";
+import { useRecoilState } from "recoil";
+import getAccessToken from "../../api/getAccessToken";
+import { AccessTokenState } from "../../recoil";
 import { selectVideoDevice, toggleAudio, toggleVideo } from "../../utils";
 
 interface Props {
@@ -31,29 +35,66 @@ export default function Prepare({
   setVideoTrack,
   setVideoDevice,
 }: Props) {
+  const [, setToken] = useRecoilState(AccessTokenState);
+  const [username, setUsername] = useState("");
+  const [roomname, setRoomname] = useState("");
+
+  const handleGetToken = async () => {
+    const accessToken = await getAccessToken(username, roomname);
+    setToken(accessToken);
+  };
+
   return (
-    <div className="controlSection">
-      <div>
-        <AudioSelectButton
-          isMuted={!audioEnabled}
-          onClick={() => toggleAudio({ audioEnabled, setAudioEnabled })}
-          onSourceSelected={setAudioDevice}
+    <>
+      <Box
+        component="form"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          "& > :not(style)": { m: 1, width: "40ch" },
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        <TextField
+          onChange={(e) => setUsername(e.target.value)}
+          id="standard-basic"
+          label="User Name"
+          variant="standard"
         />
-        <VideoSelectButton
-          isEnabled={videoTrack !== undefined}
-          onClick={() =>
-            toggleVideo({
-              videoTrack,
-              videoDevice,
-              setVideoEnabled,
-              setVideoTrack,
-            })
-          }
-          onSourceSelected={(device) => {
-            selectVideoDevice({ device, videoTrack, setVideoDevice });
-          }}
+        <TextField
+          onChange={(e) => setRoomname(e.target.value)}
+          id="standard-basic"
+          label="Room Name"
+          variant="standard"
         />
+        <Button onClick={handleGetToken} variant="outlined">
+          토큰 받기
+        </Button>
+      </Box>
+      <div className="controlSection">
+        <div>
+          <AudioSelectButton
+            isMuted={!audioEnabled}
+            onClick={() => toggleAudio({ audioEnabled, setAudioEnabled })}
+            onSourceSelected={setAudioDevice}
+          />
+          <VideoSelectButton
+            isEnabled={videoTrack !== undefined}
+            onClick={() =>
+              toggleVideo({
+                videoTrack,
+                videoDevice,
+                setVideoEnabled,
+                setVideoTrack,
+              })
+            }
+            onSourceSelected={(device) => {
+              selectVideoDevice({ device, videoTrack, setVideoDevice });
+            }}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

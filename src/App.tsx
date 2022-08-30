@@ -1,12 +1,13 @@
 import "@livekit/react-components/dist/index.css";
 import { useEffect, useState } from "react";
 import { createLocalVideoTrack, LocalVideoTrack } from "livekit-client";
-import getAccessToken from "./api/getAccessToken";
 import Prepare from "./components/prepare";
 import Stream from "./components/stream";
+import { useRecoilState } from "recoil";
+import { AccessTokenState } from "./recoil";
 
 function App() {
-  const [token, setToken] = useState(null);
+  const [token] = useRecoilState(AccessTokenState);
   const [videoTrack, setVideoTrack] = useState<LocalVideoTrack>();
   const [videoEnabled, setVideoEnabled] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
@@ -29,44 +30,33 @@ function App() {
     })();
   }, [videoDevice]);
 
-  useEffect(() => {
-    (async () => {
-      const accessToken = await getAccessToken("benny", "benny-room");
-      setToken(accessToken);
-    })();
-  }, []);
-
-  if (token) {
-    return (
-      <>
-        {canStream ? (
-          <Stream
-            url={url}
-            token={token}
-            numParticipants={numParticipants}
-            audioEnabled={audioEnabled}
-            audioDevice={audioDevice}
-            videoEnabled={videoEnabled}
-            videoDevice={videoDevice}
-            setNumParticipants={setNumParticipants}
-          />
-        ) : (
-          <Prepare
-            audioEnabled={audioEnabled}
-            videoDevice={videoDevice}
-            videoTrack={videoTrack}
-            setAudioEnabled={setAudioEnabled}
-            setAudioDevice={setAudioDevice}
-            setVideoEnabled={setVideoEnabled}
-            setVideoTrack={setVideoTrack}
-            setVideoDevice={setVideoDevice}
-          />
-        )}
-      </>
-    );
-  }
-
-  return <>hello world!</>;
+  return (
+    <>
+      {canStream ? (
+        <Stream
+          url={url}
+          token={token}
+          numParticipants={numParticipants}
+          audioEnabled={audioEnabled}
+          audioDevice={audioDevice}
+          videoEnabled={videoEnabled}
+          videoDevice={videoDevice}
+          setNumParticipants={setNumParticipants}
+        />
+      ) : (
+        <Prepare
+          audioEnabled={audioEnabled}
+          videoDevice={videoDevice}
+          videoTrack={videoTrack}
+          setAudioEnabled={setAudioEnabled}
+          setAudioDevice={setAudioDevice}
+          setVideoEnabled={setVideoEnabled}
+          setVideoTrack={setVideoTrack}
+          setVideoDevice={setVideoDevice}
+        />
+      )}
+    </>
+  );
 }
 
 export default App;
