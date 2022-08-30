@@ -1,4 +1,4 @@
-import { LocalVideoTrack } from "livekit-client";
+import { LocalVideoTrack, Room } from "livekit-client";
 
 export interface ToggleVideoParams {
   videoTrack: LocalVideoTrack | undefined;
@@ -20,4 +20,22 @@ export interface SelectVideoDeviceParams {
   setVideoDevice: (
     value: React.SetStateAction<MediaDeviceInfo | undefined>
   ) => void;
+}
+
+export interface UpdateParticipantSizeParams {
+  room: Room;
+  setNumParticipants: (value: React.SetStateAction<number>) => void;
+}
+
+export interface OnParticipantDisconnectedParams {
+  room: Room;
+  setNumParticipants: (value: React.SetStateAction<number>) => void;
+}
+
+export interface OnConnectedParams {
+  room: Room;
+  audioEnabled: boolean;
+  videoEnabled: boolean;
+  audioDevice: MediaDeviceInfo;
+  videoDevice: MediaDeviceInfo;
 }

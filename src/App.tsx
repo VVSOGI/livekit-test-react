@@ -1,13 +1,9 @@
 import "@livekit/react-components/dist/index.css";
 import { useEffect, useState } from "react";
-import {
-  AudioSelectButton,
-  LiveKitRoom,
-  VideoSelectButton,
-} from "@livekit/react-components";
 import { createLocalVideoTrack, LocalVideoTrack } from "livekit-client";
-import { selectVideoDevice, toggleAudio, toggleVideo } from "./utils";
 import getAccessToken from "./api/getAccessToken";
+import Prepare from "./components/prepare";
+import Stream from "./components/stream";
 
 function App() {
   const [token, setToken] = useState(null);
@@ -16,6 +12,7 @@ function App() {
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [audioDevice, setAudioDevice] = useState<MediaDeviceInfo>();
   const [videoDevice, setVideoDevice] = useState<MediaDeviceInfo>();
+  const [numParticipants, setNumParticipants] = useState(0);
 
   const url = "ws://localhost:7880";
 
@@ -43,31 +40,27 @@ function App() {
     return (
       <>
         {canStream ? (
-          <LiveKitRoom url={url} token={token} />
+          <Stream
+            url={url}
+            token={token}
+            numParticipants={numParticipants}
+            audioEnabled={audioEnabled}
+            audioDevice={audioDevice}
+            videoEnabled={videoEnabled}
+            videoDevice={videoDevice}
+            setNumParticipants={setNumParticipants}
+          />
         ) : (
-          <div className="controlSection">
-            <div>
-              <AudioSelectButton
-                isMuted={!audioEnabled}
-                onClick={() => toggleAudio({ audioEnabled, setAudioEnabled })}
-                onSourceSelected={setAudioDevice}
-              />
-              <VideoSelectButton
-                isEnabled={videoTrack !== undefined}
-                onClick={() =>
-                  toggleVideo({
-                    videoTrack,
-                    videoDevice,
-                    setVideoEnabled,
-                    setVideoTrack,
-                  })
-                }
-                onSourceSelected={(device) => {
-                  selectVideoDevice({ device, videoTrack, setVideoDevice });
-                }}
-              />
-            </div>
-          </div>
+          <Prepare
+            audioEnabled={audioEnabled}
+            videoDevice={videoDevice}
+            videoTrack={videoTrack}
+            setAudioEnabled={setAudioEnabled}
+            setAudioDevice={setAudioDevice}
+            setVideoEnabled={setVideoEnabled}
+            setVideoTrack={setVideoTrack}
+            setVideoDevice={setVideoDevice}
+          />
         )}
       </>
     );

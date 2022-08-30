@@ -1,8 +1,11 @@
 import { createLocalVideoTrack } from "livekit-client";
 import {
+  OnConnectedParams,
+  OnParticipantDisconnectedParams,
   SelectVideoDeviceParams,
   ToggleAudioParams,
   ToggleVideoParams,
+  UpdateParticipantSizeParams,
 } from "./types";
 
 export async function toggleVideo({
@@ -49,5 +52,46 @@ export function selectVideoDevice({
     }
     // stop video
     videoTrack.stop();
+  }
+}
+
+export function updateParticipantSize({
+  room,
+  setNumParticipants,
+}: UpdateParticipantSizeParams) {
+  setNumParticipants(room.participants.size + 1);
+}
+
+export function onParticipantDisconnected({
+  room,
+  setNumParticipants,
+}: OnParticipantDisconnectedParams) {
+  updateParticipantSize({ room, setNumParticipants });
+}
+
+export async function onConnected({
+  room,
+  audioEnabled,
+  audioDevice,
+  videoEnabled,
+  videoDevice,
+}: OnConnectedParams) {
+  // make it easier to debug
+  (window as any).currentRoom = room;
+
+  if (audioEnabled) {
+    const audioDeviceId = audioDevice.deviceId;
+    if (audioDeviceId && room.options.audioCaptureDefaults) {
+      room.options.audioCaptureDefaults.deviceId = audioDeviceId;
+    }
+    await room.localParticipant.setMicrophoneEnabled(true);
+  }
+
+  if (videoEnabled) {
+    const videoDeviceId = videoDevice.deviceId;
+    if (videoDeviceId && room.options.videoCaptureDefaults) {
+      room.options.videoCaptureDefaults.deviceId = videoDeviceId;
+    }
+    await room.localParticipant.setCameraEnabled(true);
   }
 }
