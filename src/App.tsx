@@ -13,8 +13,6 @@ function App() {
           },
         }
       );
-
-      console.log(accessToken);
     })();
   }, []);
 
