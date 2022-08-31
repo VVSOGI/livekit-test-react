@@ -34,8 +34,12 @@ export default function Stream({
         roomOptions={{
           adaptiveStream: true,
           dynacast: true,
+          publishDefaults: {
+            simulcast: true,
+            videoCodec: "h264",
+          },
           videoCaptureDefaults: {
-            resolution: VideoPresets["h1440"].resolution,
+            resolution: VideoPresets.h1440,
           },
         }}
         onConnected={async (room) => {

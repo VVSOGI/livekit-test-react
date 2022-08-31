@@ -7,6 +7,7 @@ import {
   RoomOptions,
 } from "livekit-client";
 import { useEffect, useState } from "react";
+import VideoTest from "../testVideo";
 
 interface Props {
   url: string;
@@ -64,6 +65,14 @@ export default function TestingRoom({
         유저 리스트
         {participants.map((participant) => {
           return <div key={participant.sid}>{participant.identity}</div>;
+        })}
+      </div>
+      <div>
+        {participants.map((participant) => {
+          if (participant.identity === "streamer")
+            return (
+              <VideoTest key={participant.sid} participant={participant} />
+            );
         })}
       </div>
     </div>
