@@ -4,10 +4,11 @@ import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { UsernameState } from "../../recoil";
 import {
-  onConnected,
+  setMediaEnabled,
   onParticipantDisconnected,
   updateParticipantSize,
 } from "../../utils";
+import TestingRoom from "../testingRoom";
 
 interface Props {
   url: string;
@@ -35,7 +36,27 @@ export default function Stream({
   return (
     <>
       <span>{numParticipants}</span>
-      <LiveKitRoom
+      <TestingRoom
+        url={url}
+        token={token}
+        roomOptions={{
+          adaptiveStream: true,
+          dynacast: true,
+          videoCaptureDefaults: {
+            resolution: VideoPresets["h1440"].resolution,
+          },
+        }}
+        onConnected={async (room) => {
+          await setMediaEnabled({
+            room,
+            audioEnabled,
+            audioDevice,
+            videoEnabled,
+            videoDevice,
+          });
+        }}
+      />
+      {/* <LiveKitRoom
         onConnected={(room) => {
           onConnected({
             room,
@@ -61,7 +82,7 @@ export default function Stream({
         }}
         url={url}
         token={token}
-      />
+      /> */}
     </>
   );
 }

@@ -32,7 +32,7 @@ export interface OnParticipantDisconnectedParams {
   setNumParticipants: (value: React.SetStateAction<number>) => void;
 }
 
-export interface OnConnectedParams {
+export interface SetMediaEnabledParams {
   room: Room;
   audioEnabled: boolean;
   videoEnabled: boolean;

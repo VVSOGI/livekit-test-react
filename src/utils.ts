@@ -1,6 +1,6 @@
 import { createLocalVideoTrack } from "livekit-client";
 import {
-  OnConnectedParams,
+  SetMediaEnabledParams,
   OnParticipantDisconnectedParams,
   SelectVideoDeviceParams,
   ToggleAudioParams,
@@ -69,13 +69,13 @@ export function onParticipantDisconnected({
   updateParticipantSize({ room, setNumParticipants });
 }
 
-export async function onConnected({
+export async function setMediaEnabled({
   room,
   audioEnabled,
   audioDevice,
   videoEnabled,
   videoDevice,
-}: OnConnectedParams) {
+}: SetMediaEnabledParams) {
   // make it easier to debug
   (window as any).currentRoom = room;
 
