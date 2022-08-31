@@ -13,7 +13,6 @@ function App() {
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [audioDevice, setAudioDevice] = useState<MediaDeviceInfo>();
   const [videoDevice, setVideoDevice] = useState<MediaDeviceInfo>();
-  const [numParticipants, setNumParticipants] = useState(0);
 
   const url = "ws://localhost:7880";
 
@@ -36,12 +35,10 @@ function App() {
         <Stream
           url={url}
           token={token}
-          numParticipants={numParticipants}
           audioEnabled={audioEnabled}
           audioDevice={audioDevice}
           videoEnabled={videoEnabled}
           videoDevice={videoDevice}
-          setNumParticipants={setNumParticipants}
         />
       ) : (
         <Prepare
