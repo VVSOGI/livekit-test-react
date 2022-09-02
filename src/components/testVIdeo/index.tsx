@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
-import { useParticipant, VideoRenderer } from "@livekit/react-components";
+import { useParticipant } from "@livekit/react-components";
 import { LocalTrack, Participant, RemoteTrack } from "livekit-client";
 import React, { useCallback, useEffect, useState } from "react";
+import { VideoRenderer } from "../videoRenderer";
 
 interface Props {
   participant: Participant;
@@ -43,6 +44,7 @@ export default function VideoTest({ participant }: Props) {
     return (
       <Container>
         <VideoRenderer
+          id={"video"}
           track={cameraPublication?.track}
           isLocal={isLocal}
           objectFit={"contain"}
