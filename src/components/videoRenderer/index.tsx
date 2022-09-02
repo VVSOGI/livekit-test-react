@@ -1,6 +1,6 @@
 import { Property } from "csstype";
 import { Track } from "livekit-client";
-import React, { CSSProperties, useCallback, useEffect, useRef } from "react";
+import { CSSProperties, useCallback, useEffect, useRef } from "react";
 
 export interface VideoRendererProps {
   id: string;
