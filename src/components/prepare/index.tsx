@@ -95,6 +95,58 @@ export default function Prepare({
           />
         </div>
       </div>
+      <Button
+        onClick={async () => {
+          const audioDevice = {
+            deviceId:
+              "16c528d6c36dc3f1f080b4ed5e1c74344d16fe5b4532e8c96e5f5641b4bc4d8a",
+            kind: "audioinput",
+            label: "MacBook Pro 마이크 (Built-in)",
+            groupId:
+              "1e91ac80f0e7ce2635073ec4dd1c0c2f8bfe6e1c9d4b0c31a8807b03b3f0bc04",
+          } as MediaDeviceInfo;
+          const videoDevice = {
+            deviceId:
+              "bc20f7b69b5bbf6eb80657a1ec55aa4b77e0f35659c45889c376f6c92ffc446e",
+            kind: "videoinput",
+            label: "FaceTime HD Camera",
+            groupId:
+              "87f208a8d539b99254a9b2401216f51c0d7f6e005055fbfb885b12aee1bac207",
+          } as MediaDeviceInfo;
+          setAudioDevice(audioDevice);
+          setVideoDevice(videoDevice);
+          const accessToken = await getAccessToken("streamer", "1234");
+          setToken(accessToken);
+        }}
+      >
+        스트리머빠른시작
+      </Button>
+      <Button
+        onClick={async () => {
+          const audioDevice = {
+            deviceId:
+              "16c528d6c36dc3f1f080b4ed5e1c74344d16fe5b4532e8c96e5f5641b4bc4d8a",
+            kind: "audioinput",
+            label: "MacBook Pro 마이크 (Built-in)",
+            groupId:
+              "1e91ac80f0e7ce2635073ec4dd1c0c2f8bfe6e1c9d4b0c31a8807b03b3f0bc04",
+          } as MediaDeviceInfo;
+          const videoDevice = {
+            deviceId:
+              "bc20f7b69b5bbf6eb80657a1ec55aa4b77e0f35659c45889c376f6c92ffc446e",
+            kind: "videoinput",
+            label: "FaceTime HD Camera",
+            groupId:
+              "87f208a8d539b99254a9b2401216f51c0d7f6e005055fbfb885b12aee1bac207",
+          } as MediaDeviceInfo;
+          setAudioDevice(audioDevice);
+          setVideoDevice(videoDevice);
+          const accessToken = await getAccessToken("benny", "1234");
+          setToken(accessToken);
+        }}
+      >
+        유저빠른시작
+      </Button>
     </>
   );
 }

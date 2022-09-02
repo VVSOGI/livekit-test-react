@@ -24,7 +24,7 @@ export default function Stream({
       url={url}
       token={token}
       roomOptions={{
-        adaptiveStream: true,
+        adaptiveStream: false,
         dynacast: true,
         publishDefaults: {
           simulcast: true,

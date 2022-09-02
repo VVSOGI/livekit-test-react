@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@belivvr/aframe-react": "belivvr/aframe-react",
+    "@belivvr/aframe-react": "^0.2.3",
     "@belivvr/aframe-react-stereoscopic": "^0.1.2",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",

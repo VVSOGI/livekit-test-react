@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { useParticipant } from "@livekit/react-components";
-import { LocalTrack, Participant, RemoteTrack } from "livekit-client";
+import { LocalTrack, Participant, RemoteTrack, Track } from "livekit-client";
 import { useCallback, useEffect, useState } from "react";
 import { VideoRenderer } from "../videoRenderer";
 
@@ -8,9 +8,9 @@ interface Props {
   participant: Participant;
 }
 
-const Container = styled.div`
-  width: 720px;
-  height: 480px;
+const KbpsContainer = styled.div`
+  z-index: 1000000;
+  position: absolute;
 `;
 
 export default function VideoTest({ participant }: Props) {
@@ -35,6 +35,7 @@ export default function VideoTest({ participant }: Props) {
       });
       setCurrentBitrate(total);
     }, 1000);
+
     return () => {
       clearInterval(interval);
     };
@@ -42,24 +43,24 @@ export default function VideoTest({ participant }: Props) {
 
   if (cameraPublication?.track) {
     return (
-      <Container>
+      <>
+        <KbpsContainer>
+          <span>{videoSize}</span>
+          {currentBitrate !== undefined && currentBitrate > 0 && (
+            <span>&nbsp;{Math.round(currentBitrate / 1024)} kbps</span>
+          )}
+        </KbpsContainer>
+
         <VideoRenderer
           id={"video"}
-          track={cameraPublication?.track}
+          track={cameraPublication.track}
           isLocal={isLocal}
           objectFit={"contain"}
           width={"100%"}
           height={"100%"}
           onSizeChanged={handleResize}
         />
-
-        <div>
-          <span>{videoSize}</span>
-          {currentBitrate !== undefined && currentBitrate > 0 && (
-            <span>&nbsp;{Math.round(currentBitrate / 1024)} kbps</span>
-          )}
-        </div>
-      </Container>
+      </>
     );
   } else {
     return <>loading</>;

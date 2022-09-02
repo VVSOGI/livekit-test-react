@@ -1,6 +1,11 @@
+import { Assets, Scene } from "@belivvr/aframe-react";
+import {
+  StereoscopicCamera,
+  StereoscopicVideo,
+} from "@belivvr/aframe-react-stereoscopic";
 import { Property } from "csstype";
 import { Track } from "livekit-client";
-import { CSSProperties, useCallback, useEffect, useRef } from "react";
+import { CSSProperties, useCallback, useEffect, useState } from "react";
 
 export interface VideoRendererProps {
   id: string;
@@ -29,19 +34,22 @@ export const VideoRenderer = ({
   width,
   height,
 }: VideoRendererProps) => {
-  const ref = useRef<HTMLVideoElement>(null);
-
   useEffect(() => {
-    const el = ref.current;
-    if (!el) {
+    const videoComponent = document.getElementById("video") as HTMLVideoElement;
+
+    if (!videoComponent) {
       return;
     }
-    el.muted = true;
-    track.attach(el);
+
+    track.attach(videoComponent);
+    videoComponent.srcObject = track.mediaStream as MediaStream;
+    videoComponent.muted = true;
+    videoComponent.play();
+
     return () => {
-      track.detach(el);
+      track.detach(videoComponent);
     };
-  }, [track, ref]);
+  }, [track]);
 
   const handleResize = useCallback((ev: UIEvent) => {
     if (ev.target instanceof HTMLVideoElement) {
@@ -52,14 +60,14 @@ export const VideoRenderer = ({
   }, []);
 
   useEffect(() => {
-    const el = ref.current;
-    if (el) {
-      el.addEventListener("resize", handleResize);
+    const videoComponent = document.getElementById("video") as HTMLVideoElement;
+    if (videoComponent) {
+      videoComponent.addEventListener("resize", handleResize);
     }
     return () => {
-      el?.removeEventListener("resize", handleResize);
+      videoComponent?.removeEventListener("resize", handleResize);
     };
-  }, [ref]);
+  }, []);
 
   const style: CSSProperties = {
     width: width,
@@ -79,5 +87,21 @@ export const VideoRenderer = ({
     style.objectFit = objectFit;
   }
 
-  return <video id={id} ref={ref} className={className} style={style} />;
+  return (
+    <Scene>
+      <Assets>
+        <video
+          crossOrigin="anonymous"
+          id={id}
+          className={className}
+          style={style}
+          autoPlay
+          muted
+        />
+      </Assets>
+
+      <StereoscopicCamera wasdControlsEnabled={false} reverseMouseDrag />
+      <StereoscopicVideo src="#video" mode="half" />
+    </Scene>
+  );
 };
